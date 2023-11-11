@@ -19,6 +19,6 @@ app.use(cookieParser());
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 
-app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
+app.listen(5000, () => {
+    console.log(`Server started on port 5000`);
 });
