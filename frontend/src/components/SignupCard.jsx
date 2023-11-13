@@ -32,30 +32,29 @@ export default function SignupCard() {
         password: ""
     })
     const showToast = useShowToast()
-    const setUser = useRecoilState(userAtom)
+    const setUser = useSetRecoilState(userAtom);
     const handleSignup = async () => {
-        // console.log(inputs);
         try {
             const res = await fetch("/api/users/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(inputs)
-            })
-            const data = await res.json()
+                body: JSON.stringify(inputs),
+            });
+            const data = await res.json();
 
             if (data.error) {
-                showToast("Error",data.error,"error")
-                return
+                showToast("Error", data.error, "error");
+                return;
             }
-            localStorage.setItem("user-threads", JSON.stringify(data))
-            setUser(data)
-        } catch (err) {
-            showToast("Error",error,"error")
-
+            localStorage.setItem("user-threads", JSON.stringify(data));
+            setUser(data);
+        } catch (error) {
+            showToast("Error", error, "error");
+            console.log(error);
         }
-    }
+    };
     return (
         <Flex align={'center'} justify={'center'}>
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
