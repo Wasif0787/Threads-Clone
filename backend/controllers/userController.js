@@ -1,6 +1,7 @@
 import User from "../models/userModel.js"
 import bcrypt from "bcryptjs"
 import generateTokenAndSetCookie from "../utils/helpers/generateTokenAndSetCookie.js"
+import {v2 as cloudinary} from 'cloudinary';
 
 const getUserProfile= async (req,res)=>{
     const {username} = req.params
@@ -118,7 +119,8 @@ const followUnFollowUser = async (req, res) => {
 }
 
 const updateProfile = async (req, res) => {
-    const { name, email, username, profilePic, password, bio } = req.body
+    const { name, email, username, password, bio } = req.body
+    let {profilePic} = req.body
     const userId = req.user._id
     try {
         let user = await User.findById(userId)
@@ -129,6 +131,15 @@ const updateProfile = async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, salt)
             user.password = hashedPassword
         }
+        if(profilePic){
+            if(user.profilePic){
+                await cloudinary.uploader.destroy(user.profilePic.split("/").pop().split(".")[0])
+            }
+            const uploadResponse = await cloudinary.uploader.upload(profilePic,{
+                quality: 'auto:low'
+            })
+            profilePic = uploadResponse.secure_url
+        }
         user.name = name || user.name
         user.email = email || user.email
         user.username = username || user.username
@@ -136,10 +147,11 @@ const updateProfile = async (req, res) => {
         user.bio = bio || user.bio
 
         user = await user.save()
-
-        res.status(200).json({ message: "Profile updated successfully", user })
-
+        //password should be null in console
+        user.password=null
+        res.status(200).json(user )
     } catch (err) {
+        console.log(err);
         res.status(500).json({error: err.message })
         console.log(`Error in updateProfile : ${err.message}`);
     }

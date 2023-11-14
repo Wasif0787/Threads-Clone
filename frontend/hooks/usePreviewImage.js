@@ -17,7 +17,6 @@ function usePreviewImage() {
             setImgUrl(null)
         }
     }
-    console.log(imgUrl);
   return { handleImageChange,imgUrl}
 }
 
