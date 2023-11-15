@@ -1,13 +1,19 @@
 import User from "../models/userModel.js"
 import bcrypt from "bcryptjs"
 import generateTokenAndSetCookie from "../utils/helpers/generateTokenAndSetCookie.js"
-import {v2 as cloudinary} from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
+import mongoose from "mongoose";
 
-const getUserProfile= async (req,res)=>{
-    const {username} = req.params
+const getUserProfile = async (req, res) => {
+    const { query } = req.params
     try {
-        const user = await User.findOne({username}).select("-password").select("-updatedAt")
-        if(!user) return res.status(400).json({error:"User not found"})
+        let user
+        if (mongoose.Types.ObjectId.isValid(query)) {
+            user = await User.findOne({ _id: query }).select("-password").select("-updatedAt")
+        } else {
+            user = await User.findOne({ username: query }).select("-password").select("-updatedAt")
+        }
+        if (!user) return res.status(400).json({ error: "User not found" })
         res.status(200).json(user)
     } catch (err) {
         res.status(500).json({ error: err.message })
@@ -43,8 +49,8 @@ const signupUser = async (req, res) => {
                 name: newUser.name,
                 username: newUser.username,
                 email: newUser.email,
-                bio:newUser.bio,
-                profilePic:newUser.profilePic
+                bio: newUser.bio,
+                profilePic: newUser.profilePic
             })
         } else {
             res.status(400).json({ error: "Invalid user data" })
@@ -70,8 +76,8 @@ const loginUser = async (req, res) => {
             name: user.name,
             email: user.email,
             username: user.username,
-            bio:user.bio,
-            profilePic:user.profilePic
+            bio: user.bio,
+            profilePic: user.profilePic
         })
 
     } catch (err) {
@@ -120,7 +126,7 @@ const followUnFollowUser = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     const { name, email, username, password, bio } = req.body
-    let {profilePic} = req.body
+    let { profilePic } = req.body
     const userId = req.user._id
     try {
         let user = await User.findById(userId)
@@ -131,11 +137,11 @@ const updateProfile = async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, salt)
             user.password = hashedPassword
         }
-        if(profilePic){
-            if(user.profilePic){
+        if (profilePic) {
+            if (user.profilePic) {
                 await cloudinary.uploader.destroy(user.profilePic.split("/").pop().split(".")[0])
             }
-            const uploadResponse = await cloudinary.uploader.upload(profilePic,{
+            const uploadResponse = await cloudinary.uploader.upload(profilePic, {
                 quality: 'auto:low'
             })
             profilePic = uploadResponse.secure_url
@@ -148,13 +154,13 @@ const updateProfile = async (req, res) => {
 
         user = await user.save()
         //password should be null in console
-        user.password=null
-        res.status(200).json(user )
+        user.password = null
+        res.status(200).json(user)
     } catch (err) {
         console.log(err);
-        res.status(500).json({error: err.message })
+        res.status(500).json({ error: err.message })
         console.log(`Error in updateProfile : ${err.message}`);
     }
 }
 
-export { signupUser, loginUser, logoutUser, followUnFollowUser, updateProfile , getUserProfile }
+export { signupUser, loginUser, logoutUser, followUnFollowUser, updateProfile, getUserProfile }

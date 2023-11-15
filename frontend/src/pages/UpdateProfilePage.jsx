@@ -10,6 +10,7 @@ import {
     Avatar,
     Center,
 } from '@chakra-ui/react'
+import { Link } from 'react-router-dom'
 import { useRef, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import userAtom from '../../atoms/userAtom'
@@ -142,7 +143,7 @@ export default function UpdateProfilePage() {
                             _hover={{
                                 bg: 'red.500',
                             }}>
-                            Cancel
+                            <Link to={`/${user.username}`}>Cancel</Link>
                         </Button>
                         <Button
                             bg={'green.400'}
