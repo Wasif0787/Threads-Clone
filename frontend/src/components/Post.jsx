@@ -5,12 +5,16 @@ import { Link, useNavigate } from 'react-router-dom'
 import Actions from './Actions'
 import useShowToast from '../../hooks/useShowToast'
 import {formatDistanceToNow} from "date-fns"
+import {DeleteIcon} from "@chakra-ui/icons"
+import { useRecoilValue } from 'recoil'
+import userAtom from '../../atoms/userAtom'
 
 function Post({ post,postedBy }) {
     const [user,setuser] = useState(null)
     const naviagte = useNavigate()
     const showToast = useShowToast()
     const toast = useToast()
+    const currentUser = useRecoilValue(userAtom)
 
     useEffect(()=>{
         const getUser = async()=>{
@@ -28,7 +32,18 @@ function Post({ post,postedBy }) {
         }
         getUser()
     },[postedBy,showToast])
+
     if(!user) return null
+
+    const handleDeletePost = async(e)=>{
+        e.preventDefault()
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
+
     const copyURL = () => {
         const currURl = window.location.href+`/${user.username}/post/${post._id}`;
         navigator.clipboard.writeText(currURl).then(() => {
@@ -107,6 +122,9 @@ function Post({ post,postedBy }) {
                                 <Text fontSize={"xs"} textAlign={"right"} color={"gray.light"}>
                                     {formatDistanceToNow(new Date(post.createdAt))} ago
                                 </Text>
+                                {currentUser?._id===user._id && (
+                                    <DeleteIcon size={20} onClick={handleDeletePost}/>
+                                )}
                                 <Box className='icon-container' onClick={(e) => e.preventDefault()}>
                                     <Menu>
                                         <MenuButton>
