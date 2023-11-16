@@ -1,10 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
-import connectDB from "./db/connectDb.js";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js"; // Import the router
 import postRoutes from "./routes/postRoutes.js"
 import { v2 as cloudinary } from 'cloudinary';
+import connectDB from "./connectDB.js"
+import cors from "cors"
 dotenv.config();
 
 cloudinary.config({
@@ -17,6 +18,12 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+
+app.use(cors({
+    origin: 'https://your-frontend-domain.com',
+    credentials: true,
+}));
+
 app.use(express.json({ limit: '200mb' }));
 app.use(express.urlencoded({ limit: '200mb', extended: true }))
 app.use(cookieParser());
@@ -25,6 +32,6 @@ app.use(cookieParser());
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 
-app.listen(5000, () => {
-    console.log(`Server started on port 5000`);
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
 });

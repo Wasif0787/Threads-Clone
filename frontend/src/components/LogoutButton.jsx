@@ -33,9 +33,10 @@ function LogoutButton() {
         <Button
             position={"fixed"}
             top={"30px"}
-            right={"30px"}
+            right={{ base: '50px', md: '30px' }}
             size={"sm"}
             onClick={handleLogout}
+            margin={{base:"md",md:"20px"}}
         >
             <FiLogOut size={20}/>
         </Button>

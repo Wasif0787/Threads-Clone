@@ -4,11 +4,14 @@ import UserPost from '../components/UserPost'
 import { useParams } from 'react-router-dom'
 import useShowToast from '../../hooks/useShowToast'
 import { Flex, Spinner } from '@chakra-ui/react'
+import Post from "../components/Post"
 
 function UserPage() {
   const [user, setUser] = useState(null)
   const { username } = useParams()
   const [loading,setloading] = useState(true)
+  const [fetching,setFetching] = useState(true)
+  const [posts,setPosts] = useState([])
   const showToast = useShowToast()
   useEffect(() => {
     const getUser = async () => {
@@ -22,11 +25,35 @@ function UserPage() {
         setUser(data)
       } catch (error) {
         showToast("Error",error,"error")
+        console.log(error);
       } finally{
         setloading(false)
       }
     }
+
+    const getPosts = async()=>{
+      setFetching(true)
+      try {
+        const res = await fetch(`/api/posts/user/${username}`)
+        const data = await res.json()
+        if(data.error){
+          showToast("Error",data.error,"error")
+          return;
+        }
+        // console.log(data);
+        setPosts(data)
+        // console.log(posts);
+      } catch (error) {
+        showToast("Error",error,"error")
+        setPosts([])
+        console.log(error);
+      } finally {
+        setFetching(false)
+      }
+    }
+
     getUser()
+    getPosts()
   }, [username,showToast])
   if(!user && loading) {
     return (
@@ -39,10 +66,16 @@ function UserPage() {
   return (
     <>
       <UserHeader user={user}/>
-      <UserPost likes={120} replies={234} postImg="/post1.png" postTitle="lets talk on thread" />
-      <UserPost likes={12} replies={34} postImg="/post2.png" postTitle="Kya bolti public" />
-      <UserPost likes={244} replies={467} postImg="/post3.png" postTitle="Bhupinder Jogi" />
-      <UserPost likes={75} replies={792} postTitle="i am iron man" />
+      {!fetching && posts.length===0 && <h1>User has not posted anything.</h1>}
+      {fetching && (
+        <Flex justifyContent={"center"} my={12}>
+          <Spinner size={"xl"}/>
+        </Flex>
+      )}
+      {posts.map((post) => (
+        // ... some code
+        <Post key={post._id} post={post} postedBy={post.postedBy} />
+      ))}
     </>
   )
 }

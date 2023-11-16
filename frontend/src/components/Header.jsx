@@ -16,6 +16,7 @@ function Header() {
             <AiFillHome size={24}/>
           </Link>
         )}
+        <Flex justifyContent={"center"} alignItems={"center"}>  
         <Image
         cursor={'pointer'}
         w={6}
@@ -23,6 +24,7 @@ function Header() {
         src={colorMode==='dark'?"/light-logo.svg":"/dark-logo.svg"}
         onClick={toggleColorMode}
         />
+        </Flex>
         {user && (
           <Link to={`/${user.username}`}>
             <RxAvatar size={24}/>

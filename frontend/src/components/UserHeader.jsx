@@ -11,15 +11,15 @@ import useShowToast from '../../hooks/useShowToast'
 function UserHeader({ user }) {
     const toast = useToast()
     const currentUser = useRecoilValue(userAtom)
-    const [following, setFollowing] = useState(user.followers.includes(currentUser._id))
-    const [updating,setUpdating] = useState(false)
+    const [following, setFollowing] = useState(currentUser && user.followers.includes(currentUser._id))
+    const [updating, setUpdating] = useState(false)
     const showToast = useShowToast()
     const handleFollowUnfollow = async () => {
-        if(!currentUser){
-            showToast("Error","Please login to follow","error")
+        if (!currentUser) {
+            showToast("Error", "Please login to follow", "error")
             return
         }
-        if(updating) return
+        if (updating) return
         setUpdating(true)
         try {
             const res = await fetch(`/api/users/follow/${user._id}`, {
@@ -35,17 +35,17 @@ function UserHeader({ user }) {
                 return
             }
             if (following) {
-                showToast("Success", `User unfollowed ${user.name}`,"success")
+                showToast("Success", `User unfollowed ${user.name}`, "success")
                 user.followers.pop()
             } else {
-                showToast("Success", `User followed ${user.name}`,"success")
+                showToast("Success", `User followed ${user.name}`, "success")
                 user.followers.push(currentUser._id)
             }
             setFollowing(!following)
             console.log(data);
         } catch (error) {
             showToast("Error", error, "error")
-        } finally{
+        } finally {
             setUpdating(false)
         }
     }
@@ -92,14 +92,21 @@ function UserHeader({ user }) {
                     </Box>
                 </Flex>
                 <Text>{user.bio}</Text>
-                {currentUser._id === user._id && (
-                    <Link to='/update'>
-                        <Button size={"sm"}>Update Profile</Button>
-                    </Link>
-                )}
-                {currentUser._id !== user._id && (
+                {currentUser && <>
+                    {
+                        currentUser._id === user._id && (
+                            <Link to='/update'>
+                                <Button size={"sm"}>Update Profile</Button>
+                            </Link>
+                        )
+                    }
+                    {currentUser._id !== user._id && (
+                        <Button isLoading={updating} onClick={handleFollowUnfollow} size={"sm"}>{following ? "Unfollow" : "Follow"}</Button>
+                    )}
+                </>}
+                {!currentUser && <>
                     <Button isLoading={updating} onClick={handleFollowUnfollow} size={"sm"}>{following ? "Unfollow" : "Follow"}</Button>
-                )}
+                </>}
                 <Flex w={"full"} justifyContent={"space-between"}>
                     <Flex alignItems={"center"} gap={2}>
                         <Text color={"gray.light"}>{user.followers.length} followers</Text>

@@ -20,7 +20,6 @@ function HomePage() {
         if(data.error){
           showToast("Error",data.error,"error")
         }
-        console.log(data);
         setPosts(data)
       } catch (error) {
         showToast("Error",error.message,"error")
