@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom"
 import React, { useEffect, useState } from 'react'
-import { Button, Flex, Spinner } from "@chakra-ui/react"
+import { Box, Button, Flex, Spinner } from "@chakra-ui/react"
 import { useRecoilState, useRecoilValue } from 'recoil'
 import useShowToast from "../../hooks/useShowToast"
 import userAtom from "../../atoms/userAtom"
 import Post from "../components/Post"
 import postsAtom from "../../atoms/postsAtom"
+import SuggestedUsers from "../components/SuggestedUsers"
 
 function HomePage() {
   const currentUser = useRecoilValue(userAtom)
@@ -32,7 +33,8 @@ function HomePage() {
     getFeedPosts()
   },[showToast,setPosts])
   return (
-    <>
+    <Flex gap="10" alignItems={"flex-start"}>
+      <Box flex={70} >
       {!loading  && posts.length===0 && <h1>Follow some users to see posts</h1>}
       {loading && (
         <Flex justifyContent={"center"}>
@@ -42,7 +44,11 @@ function HomePage() {
       {posts.map((post)=>(
         <Post key={post._id} post={post} postedBy={post.postedBy}/>
       ))}
-    </>
+      </Box>
+      <Box flex={30}>
+        <SuggestedUsers/>
+      </Box>
+    </Flex>
   )
 }
 

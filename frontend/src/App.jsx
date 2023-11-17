@@ -1,5 +1,5 @@
 import { Button, Container } from "@chakra-ui/react"
-import { Navigate, Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 import UserPage from "./pages/UserPage"
 import PostPage from "./pages/PostPage"
 import Header from "./components/Header.jsx"
@@ -15,8 +15,9 @@ import {FiLogIn} from "react-icons/fi"
 import LogInButton from "./components/LogInButton.jsx"
 function App() {
   const user = useRecoilValue(userAtom)
+  const {pathname} = useLocation()
   return (
-    <Container maxW="620px">
+    <Container maxW={pathname==="/"?"900px":"620px"}>
       <Header/>
       <Routes>
           <Route path="/" element={user?<HomePage/>:<Navigate to="/auth"/>}/>
