@@ -26,8 +26,6 @@ function App() {
           <Route path="/:username/post/:pid" element={<PostPage/>}/>
       </Routes>
       {user && <CreatePost/>}
-      {user && <LogoutButton/>}
-      {!user && <LogInButton /> }
     </Container>
   )
 }

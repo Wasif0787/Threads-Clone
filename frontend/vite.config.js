@@ -7,16 +7,8 @@ export default defineConfig({
 		port: 3000,
 		// Get rid of the CORS error
 		proxy: {
-			"/api": {
-				target: "http://localhost:5000",
-				changeOrigin: true,
-				secure: false,
-			},
+			"/api": 'http://localhost:5000',
 		},
-	},
-	build: {
-		target: "esnext", // or "esnext" if your environment supports it
-		polyfillDynamicImport: false, // disable dynamic import polyfill
 	},
 });
 // https://threads-backend-kzv5.onrender.com

@@ -2,29 +2,25 @@ import { Avatar, Box, Divider, Flex, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { BsThreeDots } from 'react-icons/bs'
 import Actions from './Actions'
+import { formatDistanceToNow } from 'date-fns'
 
-function Comment({likes,username,userImg,postComment,createdAt}) {
-    const [liked, setLiked] = useState(false)
+const Comment = ({ reply, lastReply }) => {
     return (
         <>
             <Flex gap={4} py={2} my={2} w={"full"}>
-                <Avatar src={userImg} size={"sm"} />
+                <Avatar src={reply.userProfilePic} size={"sm"} />
                 <Flex gap={1} w={"full"} flexDirection={"column"}>
-                    <Flex alignItems={"center"} justifyContent={"space-between"} w={"full"}>
-                        <Text fontSize={"sm"} fontWeight={"bold"}>{username}</Text>
-                        <Flex gap={4} alignItems={"center"}>
-                            <Text fontSize={"sm"} color={"gray.light"}>{createdAt}</Text>
-                            <BsThreeDots />
-                        </Flex>
+                    <Flex w={"full"} justifyContent={"space-between"} alignItems={"center"}>
+                        <Text fontSize='sm' fontWeight='bold'>
+                            {reply.username}
+                        </Text>
                     </Flex>
-                    <Text>{postComment}</Text>
-                    <Actions liked={liked} setLiked={setLiked} />
-                    <Text fontSize={"sm"} color={"gray.light"}>{likes +(liked?1:0)} likes</Text>
+                    <Text>{reply.text}</Text>
                 </Flex>
             </Flex>
-            <Divider/>
+            {!lastReply ? <Divider /> : null}
         </>
-    )
-}
+    );
+};
 
 export default Comment

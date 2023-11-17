@@ -5,31 +5,18 @@ import { useParams } from 'react-router-dom'
 import useShowToast from '../../hooks/useShowToast'
 import { Flex, Spinner } from '@chakra-ui/react'
 import Post from "../components/Post"
+import useGetUserProfile from '../../hooks/useGetUserProfile'
+import { useRecoilState } from 'recoil'
+import postsAtom from "../../atoms/postsAtom"
 
 function UserPage() {
-  const [user, setUser] = useState(null)
   const { username } = useParams()
-  const [loading,setloading] = useState(true)
+  const {user,loading} = useGetUserProfile()
   const [fetching,setFetching] = useState(true)
-  const [posts,setPosts] = useState([])
+  const [posts,setPosts] = useRecoilState(postsAtom)
   const showToast = useShowToast()
+
   useEffect(() => {
-    const getUser = async () => {
-      try {
-        const res = await fetch(`/api/users/profile/${username}`)
-        const data =await  res.json() 
-        if(data.error){
-          showToast("Error",data.error,"error")
-          return;
-        }
-        setUser(data)
-      } catch (error) {
-        showToast("Error",error,"error")
-        console.log(error);
-      } finally{
-        setloading(false)
-      }
-    }
 
     const getPosts = async()=>{
       setFetching(true)
@@ -51,10 +38,9 @@ function UserPage() {
         setFetching(false)
       }
     }
-
-    getUser()
     getPosts()
-  }, [username,showToast])
+  }, [username,showToast,setPosts])
+  
   if(!user && loading) {
     return (
       <Flex justifyContent={"center"}>
