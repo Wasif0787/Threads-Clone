@@ -25,15 +25,15 @@ const SuggestedUsers = () => {
                 setLoading(false);
             }
         };
-
+        console.log(suggestedUsers);
         getSuggestedUsers();
     }, [showToast]);
     return (
-        <>
+        <>{suggestedUsers.length!==0 && (<>
             <Text mb={4} fontWeight={"bold"}>
                 Suggested Users
             </Text>
-            <Flex direction={{base:"row",md:"column"}} gap={4} overflowX="auto">
+            <Flex direction={{ base: "row", md: "column" }} gap={4} overflowX="auto">
                 {!loading && suggestedUsers.map((user) => <Suggesteduser key={user._id} user={user} />)}
                 {loading &&
                     [0, 1, 2, 3, 4].map((_, idx) => (
@@ -60,6 +60,8 @@ const SuggestedUsers = () => {
                         </Flex>
                     ))}
             </Flex>
+        </>)}
+
         </>
     );
 };
