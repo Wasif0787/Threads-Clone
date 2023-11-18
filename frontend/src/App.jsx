@@ -1,4 +1,4 @@
-import { Button, Container } from "@chakra-ui/react"
+import { Box, Button, Container } from "@chakra-ui/react"
 import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 import UserPage from "./pages/UserPage"
 import PostPage from "./pages/PostPage"
@@ -17,7 +17,7 @@ function App() {
   const user = useRecoilValue(userAtom)
   const {pathname} = useLocation()
   return (
-    <Container maxW={pathname==="/"?"900px":"620px"}>
+    <Container maxW={pathname==="/"?{base:"620px",md:"900px"}:"620px"}>
       <Header/>
       <Routes>
           <Route path="/" element={user?<HomePage/>:<Navigate to="/auth"/>}/>
