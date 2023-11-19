@@ -8,6 +8,7 @@ import userAtom from '../../atoms/userAtom'
 import { FiLogOut } from 'react-icons/fi'
 import useLogout from '../../hooks/useLogout'
 import authScreenAtom from '../../atoms/authAtom'
+import SearchUser from './SearchUser'
 
 function Header() {
     const {colorMode,toggleColorMode} = useColorMode()
@@ -37,6 +38,7 @@ function Header() {
         </Flex>
         {user && (
           <Flex alignItems={"center"} gap={4}>
+          <SearchUser/>
           <Link to={`/${user.username}`}>
             <RxAvatar size={24}/>
           </Link>

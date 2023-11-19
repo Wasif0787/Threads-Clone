@@ -25,7 +25,6 @@ const SuggestedUsers = () => {
                 setLoading(false);
             }
         };
-        console.log(suggestedUsers);
         getSuggestedUsers();
     }, [showToast]);
     return (
