@@ -7,7 +7,7 @@ export default defineConfig({
 		port: 3000,
 		// Get rid of the CORS error
 		proxy: {
-			"/api": 'http://localhost:5000',
+			"/api": 'https://threads-backend-kzv5.onrender.com',
 		},
 	},
 });
