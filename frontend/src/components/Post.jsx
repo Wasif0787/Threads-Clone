@@ -57,16 +57,17 @@ function Post({ post, postedBy }) {
     }
 
     const copyURL = () => {
-        const currURl = window.location.href + `/${user.username}/post/${post._id}`;
-        navigator.clipboard.writeText(currURl).then(() => {
-            toast({
-                title: 'Copied URL',
-                description: "URL has been copied to clipboard",
-                status: 'success',
-                duration: 3000,
-                isClosable: true,
-            })
-        })
+        const currentWindowAddress = window.location.href;
+
+        // Create a URL object
+        const url = new URL(currentWindowAddress);
+
+        // Extract the entire base URL (including protocol and domain)
+        const baseURL = url.origin;
+
+        const urlToCopy = baseURL + `/${user.username}/post/${post._id}`
+        navigator.clipboard.writeText(urlToCopy)
+        showToast("Success", "URL Copied to clipboard", "success")
     }
     return (
         <>
@@ -154,7 +155,7 @@ function Post({ post, postedBy }) {
                         </Flex>
                         <Text fontSize={"sm"}>{post.text}</Text>
                         {post.img && <Box borderRadius={6} overflow={"hidden"} border={"1px solid gray.light"}>
-                            <Image src={post.img} w={"full"}  h={250}/>
+                            <Image src={post.img} w={"full"} h={250} />
                         </Box>}
                         <Flex gap={3} my={1}>
                             <Actions post={post} />

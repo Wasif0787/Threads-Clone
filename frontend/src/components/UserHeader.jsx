@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Flex, Menu, MenuButton, MenuItem, MenuList, Portal, Text, VStack, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Button, Flex, FormControl, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Portal, Skeleton, SkeletonCircle, Text, VStack, useDisclosure, useToast } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BsInstagram } from "react-icons/bs"
@@ -7,18 +7,44 @@ import { useRecoilValue } from 'recoil'
 import userAtom from '../../atoms/userAtom'
 import useShowToast from '../../hooks/useShowToast'
 import useHandleFollowAndUnfollow from '../../hooks/useHandleFollowAndUnfollow'
+import UserList from './UserList'
 
 
 function UserHeader({ user }) {
     const toast = useToast()
     const showToast = useShowToast()
     const currentUser = useRecoilValue(userAtom)
-    const {handleFollowUnfollow,updating,following} = useHandleFollowAndUnfollow({user})
+    const { handleFollowUnfollow, updating, following } = useHandleFollowAndUnfollow({ user })
+    const [loading, setLoading] = useState(true);
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const [followers,setFollowers]=  useState([])
+
     const copyURL = () => {
         const currURl = window.location.href;
         navigator.clipboard.writeText(currURl).then(() => {
-            showToast("Copied","URL Copied","success")
+            showToast("Copied", "URL Copied", "success")
         })
+    }
+    const handleClose = ()=>{
+        onClose(true)
+        setLoading(false)
+    }
+    const getUserFollowers = async () => {
+        onOpen(true)
+        setLoading(true)
+        try {
+            const res = await fetch(`/api/users/${user.username}/followers`)
+            const data = await res.json()
+            if(data.error){
+                showToast("Error",data.error,"error")
+                return;
+            }
+            setFollowers(data)
+        } catch (error) {
+            showToast("Error", error, "error")
+        } finally {
+            setLoading(false)
+        }
     }
     return (
         <>
@@ -62,13 +88,14 @@ function UserHeader({ user }) {
                     {currentUser._id !== user._id && (
                         <Button isLoading={updating} onClick={handleFollowUnfollow} size={"sm"}>{following ? "Unfollow" : "Follow"}</Button>
                     )}
-                </>}
+                </>
+                }
                 {!currentUser && <>
                     <Button isLoading={updating} onClick={handleFollowUnfollow} size={"sm"}>{following ? "Unfollow" : "Follow"}</Button>
                 </>}
                 <Flex w={"full"} justifyContent={"space-between"}>
                     <Flex alignItems={"center"} gap={2}>
-                        <Text color={"gray.light"}>{user.followers.length} followers</Text>
+                        <Text onClick={getUserFollowers} _hover={{ cursor: 'pointer' }} color={"gray.light"}>{user.followers.length} followers</Text>
                         <Box bg={"gray.light"} h={1} w={1} borderRadius={"full"}></Box>
                         <Link style={{ color: "#616161" }}>instagram.com</Link>
                     </Flex>
@@ -99,6 +126,42 @@ function UserHeader({ user }) {
                     </Flex>
                 </Flex>
             </VStack>
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent w={{ base: "300px", md: "full" }}>
+                    <ModalHeader>Followers</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody pb={6}>
+                        {loading &&
+                            [0, 1, 2].map((_, idx) => (
+                                <Flex
+                                    key={idx}
+                                    gap={2}
+                                    alignItems={"center"}
+                                    p={"1"}
+                                    borderRadius={"md"}
+                                >
+                                    {/* Avatar */}
+                                    <Box>
+                                        <SkeletonCircle size={"10"} />
+                                    </Box>
+                                    {/* Username and fullname */}
+                                    <Flex w={"full"} flexDirection={"column"} gap={2}>
+                                        <Skeleton h={"8px"} w={"80px"} />
+                                        <Skeleton h={"8px"} w={"90px"} />
+                                    </Flex>
+                                    {/* Follow Button */}
+                                    <Flex>
+                                        <Skeleton h={"20px"} w={"60px"} />
+                                    </Flex>
+                                </Flex>
+                            ))}
+                            <Box>
+                            {!loading && followers.map((user) => <UserList key={user._id} user={user} />)}
+                            </Box>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
         </>
     )
 }

@@ -1,4 +1,4 @@
-import { Box, Button, Container } from "@chakra-ui/react"
+import { Container } from "@chakra-ui/react"
 import { Navigate, Route, Routes, useLocation } from "react-router-dom"
 import UserPage from "./pages/UserPage"
 import PostPage from "./pages/PostPage"
@@ -8,11 +8,8 @@ import HomePage from "./pages/HomePage"
 import AuthPage from "./pages/AuthPage"
 import { useRecoilValue } from "recoil"
 import userAtom from "../atoms/userAtom"
-import LogoutButton from "./components/LogoutButton"
 import UpdateProfilePage from "./pages/UpdateProfilePage"
 import CreatePost from "./components/CreatePost"
-import {FiLogIn} from "react-icons/fi"
-import LogInButton from "./components/LogInButton.jsx"
 function App() {
   const user = useRecoilValue(userAtom)
   const {pathname} = useLocation()

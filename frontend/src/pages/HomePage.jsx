@@ -1,13 +1,11 @@
-import { Link } from "react-router-dom"
-import React, { useEffect, useState } from 'react'
-import { Box, Button, Flex, Skeleton, SkeletonCircle, Spinner } from "@chakra-ui/react"
+import  { useEffect, useState } from 'react'
+import { Box, Flex, Skeleton, SkeletonCircle } from "@chakra-ui/react"
 import { useRecoilState, useRecoilValue } from 'recoil'
 import useShowToast from "../../hooks/useShowToast"
 import userAtom from "../../atoms/userAtom"
 import Post from "../components/Post"
 import postsAtom from "../../atoms/postsAtom"
 import SuggestedUsers from "../components/SuggestedUsers"
-import Footer from "../components/Footer"
 
 function HomePage() {
   const currentUser = useRecoilValue(userAtom)

@@ -5,7 +5,7 @@ import Actions from '../components/Actions'
 import Comment from '../components/Comment'
 import useGetUserProfile from '../../hooks/useGetUserProfile'
 import useShowToast from '../../hooks/useShowToast'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import userAtom from '../../atoms/userAtom'
 import { formatDistanceToNow } from 'date-fns'
@@ -73,7 +73,7 @@ function PostPage() {
   return (
     <>
       <Flex justifyContent={"space-between"}>
-        <Flex alignItems={"center"} w={"Full"} gap={3}>
+        <Flex alignItems={"center"} w={"Full"} gap={3} as={Link} to={`/${user.username}`}>
           <Avatar src={user.profilePic} size={"md"} name='Mark' />
           <Flex alignItems={"center"}>
             <Text fontSize={"sm"} fontWeight={"bold"}>{user.username}</Text>

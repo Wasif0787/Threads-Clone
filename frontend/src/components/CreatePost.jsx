@@ -74,6 +74,7 @@ function CreatePost() {
             >
                 <AddIcon />
             </Button>
+            <h1> Hello</h1>
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>

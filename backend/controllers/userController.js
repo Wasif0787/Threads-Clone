@@ -21,7 +21,7 @@ const getUserProfile = async (req, res) => {
         console.log(`Error in getUserProfile : ${err.message}`);
     }
 }
-
+    
 const signupUser = async (req, res) => {
     try {
         const { name, email, username, password } = req.body
@@ -184,7 +184,6 @@ const updateProfile = async (req, res) => {
 
 const getSuggestedUser = async (req, res) => {
     try {
-        // exclude the current user from suggested users array and exclude users that current user is already following
         const userId = req.user._id;
 
         const usersFollowedByYou = await User.findById(userId).select("following");
@@ -214,7 +213,6 @@ const getSearchedUser = async (req, res) => {
     try {
         const userId = req.user._id;
         const { query } = req.params;
-
         // Use a regular expression to perform a case-insensitive search for username or name containing the query
         const users = await User.find({
             $and: [
@@ -238,5 +236,31 @@ const getSearchedUser = async (req, res) => {
     }
 };
 
+const getUserFollowers = async (req, res) => {
+    try {
+        const { username } = req.params
+        const user = await User.findOne({ username }).select("followers")
+        if (!user) return res.status(400).json({ error: "User not found" })
+        const followerIds = user.followers;
+        const followers = await User.find({ _id: { $in: followerIds } });
+        res.status(200).json(followers)
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
-export { signupUser, loginUser, logoutUser, followUnFollowUser, updateProfile, getUserProfile, getSuggestedUser, getSearchedUser }
+const getUserFollowing = async (req,res) =>{
+    try {
+        const { username } = req.params
+        const user = await User.findOne({ username }).select("following")
+        if (!user) return res.status(400).json({ error: "User not found" })
+        const followingIds = user.following;
+        const followings = await User.find({ _id: { $in: followingIds } });
+        res.status(200).json(followings)
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
+export { signupUser, loginUser, logoutUser, followUnFollowUser, updateProfile, getUserProfile, getSuggestedUser, getSearchedUser, getUserFollowers,getUserFollowing }

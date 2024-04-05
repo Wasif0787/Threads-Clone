@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
     import React, { useState } from 'react'
     import { CiSearch } from "react-icons/ci";
     import { useRecoilValue } from 'recoil';
@@ -5,27 +6,62 @@
     import { Box, Button, Flex, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Skeleton, SkeletonCircle, Text, useDisclosure } from '@chakra-ui/react';
     import { Link } from 'react-router-dom';
     import useShowToast from '../../hooks/useShowToast';
-    import SearchedUser from './SearchedUser';
-
+    import _debounce from 'lodash/debounce';
+    import UserList from './UserList';
 
     const SearchUser = () => {
         const [searchedUsers,setSearchedusers]= useState([])
         const [text,setText] = useState("")
         const [loading, setLoading] = useState(false);
-        const showToast = useShowToast()
         const { isOpen, onOpen, onClose } = useDisclosure()
+        const showToast = useShowToast()
+        
 
-        const handleChange = (e)=>{
-            const inputText = e.target.value
-            setText(inputText)
-        }
+        const debouncedSearch = _debounce(async (inputText) => {
+            setLoading(true);
+            try {
+                const res = await fetch(`/api/users/search/${inputText}`);
+                const data = await res.json();
+                if (data.error) {
+                    showToast("Error", data.error, "error");
+                    setSearchedusers([]);
+                    return;
+                }
+                if (!data) {
+                    setLoading(false);
+                    return;
+                }
+                setSearchedusers(data);
+            } catch (error) {
+                showToast("Error", error, "error");
+            } finally {
+                setLoading(false);
+            }
+        }, 300); 
+
+        const handleChange = (e) => {
+            const inputText = e.target.value;
+            setText(inputText);
+            if (inputText.length > 0) {
+                debouncedSearch(inputText);
+            } else {
+                // Clear the results if the input is empty
+                setSearchedusers([]);
+            }
+        };
         const handleClose = ()=>{
+            onClose(true)
             setSearchedusers([])
             setText("")
             setLoading(false)
         }
         const handleSearchUser = async ()=>{
             setLoading(true)
+            if(text.length===0){
+                setLoading(false)
+                showToast("Error","Input required","error")
+                return
+            }
             try {
                 const res = await fetch(`/api/users/search/${text}`)
                 const data = await res.json()
@@ -59,7 +95,7 @@
                         <ModalCloseButton onClick={handleClose}/>
                         <ModalBody pb={6}>
                             <FormControl display={"flex"} flexDirection={'row'} alignItems={"center"} mb={5}>
-                                <Input  value={text} type='text' onChange={handleChange} placeholder='search users...'/>
+                                <Input  value={text} required type='text' onChange={handleChange} placeholder='search users...'/>
                                 <Button onClick={handleSearchUser}><CiSearch size={24}/></Button>
                             </FormControl>
                             {loading &&
@@ -86,7 +122,9 @@
                                         </Flex>
                                     </Flex>
                                 ))}
-                            {!loading && searchedUsers.map((user) => <SearchedUser key={user._id} user={user} />)}
+                                <Box>
+                                {!loading && searchedUsers.map((user) => <UserList key={user._id} user={user} />)}
+                                </Box>
                         </ModalBody>
                     </ModalContent>
                 </Modal>
