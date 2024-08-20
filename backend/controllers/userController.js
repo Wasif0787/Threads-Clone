@@ -21,7 +21,7 @@ const getUserProfile = async (req, res) => {
         console.log(`Error in getUserProfile : ${err.message}`);
     }
 }
-    
+
 const signupUser = async (req, res) => {
     try {
         const { name, email, username, password } = req.body
@@ -249,7 +249,7 @@ const getUserFollowers = async (req, res) => {
     }
 }
 
-const getUserFollowing = async (req,res) =>{
+const getUserFollowing = async (req, res) => {
     try {
         const { username } = req.params
         const user = await User.findOne({ username }).select("following")
@@ -263,4 +263,4 @@ const getUserFollowing = async (req,res) =>{
 }
 
 
-export { signupUser, loginUser, logoutUser, followUnFollowUser, updateProfile, getUserProfile, getSuggestedUser, getSearchedUser, getUserFollowers,getUserFollowing }
+export { signupUser, loginUser, logoutUser, followUnFollowUser, updateProfile, getUserProfile, getSuggestedUser, getSearchedUser, getUserFollowers, getUserFollowing }

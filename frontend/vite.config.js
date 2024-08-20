@@ -1,14 +1,15 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+const backendUrl = 'http://localhost:5000' || process.env.VITE_API_BACKEND
 // https://vitejs.dev/config/
 export default defineConfig({
+
 	plugins: [react()],
 	server: {
-		port: 3000,
+		port: 4000,
 		// Get rid of the CORS error
 		proxy: {
-			"/api": 'https://threads-backend-kzv5.onrender.com',
+			"/api": backendUrl,
 		},
 	},
 });
-// https://threads-backend-kzv5.onrender.com

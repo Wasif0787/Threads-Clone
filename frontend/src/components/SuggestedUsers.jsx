@@ -28,7 +28,7 @@ const SuggestedUsers = () => {
         getSuggestedUsers();
     }, [showToast]);
     return (
-        <>{suggestedUsers.length!==0 && (<>
+        <>{suggestedUsers.length !== 0 && (<>
             <Text mb={4} fontWeight={"bold"}>
                 Suggested Users
             </Text>

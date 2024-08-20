@@ -7,7 +7,7 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import userAtom from '../../atoms/userAtom'
 import useShowToast from '../../hooks/useShowToast'
 import postsAtom from '../../atoms/postsAtom'
-import {useParams} from "react-router-dom"
+import { useParams } from "react-router-dom"
 
 function CreatePost() {
     const MAX_CHAR = 500
@@ -18,9 +18,9 @@ function CreatePost() {
     const { handleImageChange, imgUrl, setImgUrl } = usePreviewImage()
     const [remainingChar, setRemainingChar] = useState(MAX_CHAR)
     const showToast = useShowToast()
-    const [loading,setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [posts, setPosts] = useRecoilState(postsAtom)
-    const {username} = useParams()
+    const { username } = useParams()
 
 
     const handleTextChange = (e) => {
@@ -45,20 +45,20 @@ function CreatePost() {
                 body: JSON.stringify({ postedBy: user._id, text: postText, img: imgUrl })
             })
             const data = await res.json()
-            if(data.error){
-                showToast("Error",data.error,"error")
+            if (data.error) {
+                showToast("Error", data.error, "error")
                 return
             }
-            showToast("Success","Post Created Successfully","success")
-            if(username ===  user.username){
-                setPosts([data,...posts])
+            showToast("Success", "Post Created Successfully", "success")
+            if (username === user.username) {
+                setPosts([data, ...posts])
             }
             setpostText("")
             setImgUrl('')
             onClose()
         } catch (error) {
-            showToast("Error",error,"error")
-        }finally{
+            showToast("Error", error, "error")
+        } finally {
             setLoading(false)
         }
     }
@@ -70,11 +70,10 @@ function CreatePost() {
                 bottom={10}
                 bg={useColorModeValue("gray.300", "gray.dark")}
                 onClick={onOpen}
-                size={{base:"sm",sm:"md"}}
+                size={{ base: "sm", sm: "md" }}
             >
                 <AddIcon />
             </Button>
-            <h1> Hello</h1>
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>

@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import userRoutes from "./routes/userRoutes.js"; // Import the router
+import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js"
 import { v2 as cloudinary } from 'cloudinary';
 import connectDB from "./connectDB.js"
