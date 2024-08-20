@@ -34,6 +34,10 @@ app.use(cookieParser());
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 
+app.get('*', (req, res) => {
+    const indexPath = path.resolve(__dirname, 'dist', 'index.html',)
+    res.sendFile(indexPath)
+})
 
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
