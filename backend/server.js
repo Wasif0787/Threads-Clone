@@ -8,6 +8,7 @@ import connectDB from "./connectDB.js"
 import path from 'path';
 import { fileURLToPath } from 'url'; // Import fileURLToPath
 import { dirname } from 'path';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -25,6 +26,12 @@ const PORT = process.env.PORT || 5000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const corsOptions = {
+    origin: 'https://threads-wasif-project.netlify.app', // Allow your Netlify domain
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.static('dist'))
 app.use(express.json({ limit: '200mb' }));
 app.use(express.urlencoded({ limit: '200mb', extended: true }))

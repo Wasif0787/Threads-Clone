@@ -1,2 +1,3 @@
-/api/*    https://threads-backend-kzv5.onrender.com/api/:splat   200
+/api
+/*    https://threads-backend-kzv5.onrender.com/api/:splat   200
 /*        /index.html   200
