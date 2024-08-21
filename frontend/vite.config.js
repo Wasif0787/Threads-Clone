@@ -10,4 +10,3 @@ export default defineConfig({
 		},
 	},
 });
-// https://threads-backend-kzv5.onrender.comrs

@@ -27,7 +27,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const corsOptions = {
-    origin: 'https://threads-wasif-project.netlify.app', // Allow your Netlify domain
+    origin: process.env.BACKEND_API_URL,
     credentials: true,
 };
 
